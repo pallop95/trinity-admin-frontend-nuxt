@@ -13,6 +13,7 @@
 import Vue from 'vue'
 
 export default Vue.extend({
+  // middleware: ['check-auth', 'auth'],
   data () {
     return {
       displaySidenav: false

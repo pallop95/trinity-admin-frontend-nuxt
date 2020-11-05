@@ -3,7 +3,10 @@
     class="button"
     :class="btnStyle"
     v-bind="$attrs"
-    v-on="$listeners"><slot /></button>
+    v-on="$listeners"
+  >
+    <slot />
+  </button>
 </template>
 
 <script>
@@ -17,7 +20,6 @@ export default {
   }
 }
 </script>
-
 
 <style scoped>
 .button {
