@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div>
-      <Logo />
+      <!-- <Logo /> -->
     </div>
   </div>
 </template>

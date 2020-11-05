@@ -46,9 +46,19 @@ export default {
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-  axios: {},
+  axios: {
+    proxy: false,
+    proxyHeaders: false,
+    baseURL: 'https://nuxt-blog-8f570.firebaseio.com'
+  },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
+  },
+  // ,
+
+  env: {
+    baseUrl: process.env.BASE_URL || 'https://nuxt-blog-8f570.firebaseio.com',
+    fbAPIKey: 'AIzaSyAI2UzDR-csGgzilh7x8sTsuf6CHX-oKKg'
   }
 }

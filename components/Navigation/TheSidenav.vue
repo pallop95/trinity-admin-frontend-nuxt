@@ -5,19 +5,62 @@
       <div v-if="show" class="sidenav">
         <ul class="nav-list" @click="$emit('close')">
           <li class="nav-item">
-            <nuxt-link to="/posts">
-              Blog
-            </nuxt-link>
+            Device Manage Management
+            <ul class="sub-nav-list">
+              <li>
+                <nuxt-link to="/device-manage-management/import-sn">
+                  Import S/N
+                </nuxt-link>
+              </li>
+              <li>
+                <nuxt-link to="/device-manage-management/download-qr">
+                  Download QR
+                </nuxt-link>
+              </li>
+            </ul>
           </li>
           <li class="nav-item">
-            <nuxt-link to="/about">
-              About
-            </nuxt-link>
+            User Management
+            <ul class="sub-nav-list">
+              <li>
+                <nuxt-link to="/user-management/create-user">
+                  Create User
+                </nuxt-link>
+              </li>
+              <li>
+                <nuxt-link to="/user-management/roles">
+                  Roles
+                </nuxt-link>
+              </li>
+              <li>
+                <nuxt-link to="/user-management/permission">
+                  Permission
+                </nuxt-link>
+              </li>
+            </ul>
           </li>
           <li class="nav-item">
-            <nuxt-link to="/admin">
-              Admin
-            </nuxt-link>
+            Master Management
+            <ul class="sub-nav-list">
+              <li>
+                <nuxt-link to="/master-management/firmware">
+                  Firmware
+                </nuxt-link>
+              </li>
+              <li>
+                <nuxt-link to="/master-management/sensor-model">
+                  Sensor Model
+                </nuxt-link>
+              </li>
+              <li>
+                <nuxt-link to="/master-management/sensor-type">
+                  Sensor Type
+                </nuxt-link>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            Dashboard
           </li>
         </ul>
       </div>
@@ -80,6 +123,13 @@ export default Vue.extend({
   list-style: none;
   padding: 0;
   margin: 0;
+}
+
+.sub-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0 20px;
+  color: #304455;
 }
 
 .nav-item {

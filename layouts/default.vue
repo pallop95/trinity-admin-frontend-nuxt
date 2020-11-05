@@ -22,7 +22,7 @@ export default Vue.extend({
 </script>
 
 <style>
-html {
+/* html {
   font-family:
     'Source Sans Pro',
     -apple-system,
@@ -75,5 +75,13 @@ html {
 .button--grey:hover {
   color: #fff;
   background-color: #35495e;
+} */
+
+html {
+  font-family: 'Open Sans', sans-serif;
+}
+
+body {
+  margin: 0;
 }
 </style>
