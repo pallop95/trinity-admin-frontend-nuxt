@@ -1,25 +1,13 @@
 <template>
   <div>
-    <!-- <div class="mt-3">
-      Submitted Names:
-      <div v-if="submittedNames.length === 0">--</div>
-      <ul v-else class="mb-0 pl-3">
-        <li
-          v-for="name in submittedNames"
-          v-bind:key="name"
-        >
-          {{ name }}
-        </li>
-      </ul>
-    </div> -->
-
     <b-container class="firmware-row">
       <b-row>
         <b-col md="2" offset-md="10">
           <b-button 
             title="Save file"
-            v-b-modal.add-modal
+            @click="handleClickAdd"
           >
+          <!-- v-b-modal.add-modal -->
             <b-icon
               icon="cloud-upload"
               aria-hidden="true"
@@ -27,6 +15,7 @@
           </b-button>
         </b-col>
       </b-row>
+
       <b-row align-v="center" class="firmware-table">
         <b-col md="12">
           <div class="content">
@@ -63,81 +52,7 @@
       </b-row>
     </b-container>
 
-    <b-modal
-      id="add-modal"
-      ref="modal"
-      title="Insert Firmware"
-      @show="resetModalAdd"
-      @hidden="resetModalAdd"
-      @ok="handleOkAdd"
-    >
-      <form ref="form" @submit.stop.prevent="handleSubmitAdd">
-        <b-form-group
-          :state="versionState"
-          label="Version"
-          label-for="Version-input"
-          invalid-feedback="Version is required"
-        >
-          <b-form-input
-            id="version-input"
-            v-model="firmware.version"
-            :state="versionState"
-            required
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-          :state="firmwareLinkState"
-          label="Firmware Link"
-          label-for="firmwareLink-input"
-          invalid-feedback="FirmwareLink is required"
-        >
-          <b-form-input
-            id="firmwareLink-input"
-            v-model="firmware.firmwareLink"
-            :state="firmwareLinkState"
-            required
-          ></b-form-input>
-        </b-form-group>
-      </form>
-    </b-modal>
-
-    <b-modal
-      :id="editModal.id"
-      ref="editModal"
-      title="Edit Firmware"
-      @ok="handleOkAdd"
-    >
-      <form ref="form" @submit.stop.prevent="handleSubmitEdit">
-        <b-form-group
-          :state="versionState"
-          label="Version"
-          label-for="Version-input"
-          invalid-feedback="Version is required"
-        >
-          <b-form-input
-            id="version-update-input"
-            v-model="editModal.firmware.version"
-            :state="versionState"
-            required
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-          :state="firmwareLinkState"
-          label="Firmware Link"
-          label-for="firmwareLink-input"
-          invalid-feedback="FirmwareLink is required"
-        >
-          <b-form-input
-            id="firmwareLink-update-input"
-            v-model="editModal.firmware.firmwareLink"
-            :state="firmwareLinkState"
-            required
-          ></b-form-input>
-        </b-form-group>
-      </form>
-    </b-modal>
+    <FirmwareForm @submit="onSubmitted" />
 
     <b-modal
       :id="deleteModal.id"
@@ -157,8 +72,18 @@ import Vue from "vue"
 import { Firmware } from '@/interfaces/firmware.interface'
 
 export default Vue.extend({
+  /*asyncData() {
+    return {
+      firmware: {
+        version: '11111',
+        firmwareLink: 'firmwareLink1111',
+      }
+    }
+  },*/
   data() {
     return {
+      // isModalVisible: false,
+      addModalId: 'add-modal',
       editModal: {
         id: 'edit-modal',
         firmware: {} as Firmware,
@@ -199,54 +124,37 @@ export default Vue.extend({
         }
       ],
       firmware: {} as Firmware,
+      blankFirmware: {
+        id: '',
+        version: '',
+        firmwareLink: '',
+        created_at: new Date(),
+      } as Firmware,
       versionState: null as boolean | null,
       firmwareLinkState: null as boolean | null,
-      firmwares: [] as Firmware[]
+      firmwares: [] as any[]
     }
   },
-  async mounted() {
+  async mounted(): Promise<void> {
     await this.getFirmwares()
   },
   methods: {
-    formatDate(dateInput: string) {
-      let date = new Date(dateInput)
-      return date.toISOString().substring(0, 10)
-    },
-    checkFormValidity() {
-      const valid = (this.$refs.form as Vue & { checkValidity: () => boolean }).checkValidity()
-      this.versionState = (this.firmware.version.length == 0) ? false: true
-
-      this.firmwareLinkState = (this.firmware.firmwareLink.length == 0) ? false: true
-      return valid
-    },
-    resetModalAdd() {
-      this.firmware.version = ''
-      this.versionState = null
-      this.firmware.firmwareLink = ''
-      this.firmwareLinkState = null
-    },
-    handleOkAdd(bvModalEvt: any) {
-      // Prevent modal from closing
-      bvModalEvt.preventDefault()
-
-      this.handleSubmitAdd()
-    },
-    async handleSubmitAdd() {
-      if (!this.checkFormValidity()) {
-        return
+    async onSubmitted(editedFirmware: Firmware): Promise<void> {
+      console.log(editedFirmware)
+      this.firmware = editedFirmware
+      
+      if(this.firmware.id === '') {
+        await this.postFirmware()
+      } else {
+        await this.updateFirmware(this.firmware)
       }
-
-      // Push the name to submitted names
-      // this.submittedNames.push(this.name)
-
-      await this.postFirmware()
-
-      // Hide the modal manually
-      this.$nextTick(() => {
-        (this as any).$bvModal.hide('modal-prevent-closing')
-      })
     },
-
+    // showModal() {
+    //   this.isModalVisible = true;
+    // },
+    // closeModal() {
+    //   this.isModalVisible = false;
+    // },
     async postFirmware (): Promise<void> {
       let createFirmware = {
           ...this.firmware,
@@ -256,7 +164,7 @@ export default Vue.extend({
       const res = await (this as any).$axios.post(
         "/firmwares.json", createFirmware
       )
-      console.log('res', res)
+      console.log('postFirmware', res)
       if (res.status === 200) {
         createFirmware = {
           ...createFirmware,
@@ -265,6 +173,27 @@ export default Vue.extend({
         this.firmwares.push(createFirmware)
       }
     },
+    async updateFirmware (firmware: Firmware): Promise<void> {
+      let firmwares = this.firmwares
+
+      firmware.created_at = new Date()
+
+      const res = await (this as any).$axios({
+        method: "put",
+        url: "/firmwares/" + firmware.id +".json",
+        data: firmware
+      })
+
+      if (res.status == 200) {
+        let index = firmwares.findIndex((item: Firmware) => item.id === firmware.id)
+        firmwares[index].version = firmware.version
+        firmwares[index].firmwareLink = firmware.firmwareLink
+        firmwares[index].created_at = firmware.created_at
+      }
+
+      this.firmwares = firmwares
+    },
+
     async getFirmwares (): Promise<void> {
       const res = await (this as any).$axios.get("/firmwares.json")
 
@@ -274,15 +203,23 @@ export default Vue.extend({
           this.firmwares.push({ ...res.data[key], id: key });
       }
     },
-    async handleClickEdit (firmware: Firmware, button: any) {
-      console.log('handleClickEdit')
-      console.log(firmware.version)
-      console.log(firmware.firmwareLink)
-      this.firmware.version = firmware.version
-      this.firmware.firmwareLink = firmware.firmwareLink
-      this.editModal.firmware = firmware
-      this.$root.$emit("bv::show::modal", this.editModal.id, button)
+    async handleClickAdd (): Promise<void> {
+      console.log('handleClickAdd')
+      this.firmware = this.blankFirmware
+      // this.firmware = {};
+
+      // await (this as any).$store.dispatch('firmwares/setFirmwareAction', this.firmware)
+      await (this as any).$store.dispatch('firmwares/setFirmwareAction', this.firmware)
+
+      this.$root.$emit("bv::show::modal", this.addModalId)
     },
+    async handleClickEdit (firmware: Firmware, button: any): Promise<void> {
+      this.firmware = firmware
+      await (this as any).$store.dispatch('firmwares/setFirmwareAction', this.firmware)
+
+      this.$root.$emit("bv::show::modal", this.addModalId)
+    },
+
     handleClickDelete (firmware: any, button: any) {
       this.deleteModal.content =
         "FirmwareID: " + firmware.id + "\n" +
@@ -290,21 +227,22 @@ export default Vue.extend({
       this.deleteModal.firmware = firmware;
       this.$root.$emit("bv::show::modal", this.deleteModal.id, button)
     },
-    async confirmDelete() {
+    async confirmDelete(): Promise<void> {
       console.log('confirmDelete');
       let employee: Firmware = this.deleteModal.firmware;
 
       const res = await (this as any).$axios({
         method: "delete",
         url: "/firmwares/" + employee.id +".json"
-        // headers: {
-        //   "Content-Type": "text/plain",
-        //   Authorization: this.$store.getters["auths/bearerToken"],
-        // }
       })
 
       this.firmwares = this.firmwares.filter((firmmware: Firmware) => firmmware.id != employee.id)
     },
+
+    formatDate(dateInput: string) {
+      let date = new Date(dateInput)
+      return date.toISOString().substring(0, 10)
+    }
   }
 })
 </script>

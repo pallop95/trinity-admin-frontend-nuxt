@@ -1,12 +1,11 @@
 <template>
   <div>
-
+<!-- @hidden="resetModalAdd" -->
     <b-modal
       id="add-modal"
       ref="modal"
       title="Insert Firmware"
       @show="resetModalAdd"
-      @hidden="resetModalAdd"
       @ok="handleOkAdd"
     >
       <form ref="form" @submit.stop.prevent="handleSubmitAdd">
@@ -18,7 +17,7 @@
         >
           <b-form-input
             id="version-input"
-            v-model="firmware.version"
+            v-model="editedFirmware.version"
             :state="versionState"
             required
           ></b-form-input>
@@ -32,14 +31,14 @@
         >
           <b-form-input
             id="firmwareLink-input"
-            v-model="firmware.firmwareLink"
+            v-model="editedFirmware.firmwareLink"
             :state="firmwareLinkState"
             required
           ></b-form-input>
         </b-form-group>
       </form>
+      <!-- <h1>{{ editedFirmware }}</h1> -->
     </b-modal>
-
   </div>
 </template>
 
@@ -48,21 +47,20 @@ import Vue from "vue"
 import { Firmware } from '@/interfaces/firmware.interface'
 
 export default Vue.extend({
-  props: {
-    firmware: {
-      type: Object,
-      required: false
-    }
-  },
+//   props: {
+//     firmware: {
+//       type: Object,
+//       required: true
+//     }
+//   },
   data() {
     return {
-        editedFirmware: this.firmware ?
-        { 
-            ...this.firmware 
-        }:
-        {
+        uneditableFirmware: {} as Firmware,
+        editedFirmware: {
+            id: '',
             version: '',
-            firmwareLink: ''
+            firmwareLink: '',
+            created_at: new Date()
         },
       /*editModal: {
         id: 'edit-modal',
@@ -87,11 +85,16 @@ export default Vue.extend({
       this.firmwareLinkState = (this.editedFirmware.firmwareLink.length == 0) ? false: true
       return valid
     },
-    resetModalAdd() {
-      this.editedFirmware.version = ''
-      this.versionState = null
-      this.editedFirmware.firmwareLink = ''
-      this.firmwareLinkState = null
+    async resetModalAdd() {
+        console.log('resetModalAdd')
+        this.versionState = null
+        this.firmwareLinkState = null
+        this.uneditableFirmware = await this.$store.getters['firmwares/getFirmware']
+        // console.log(this.uneditableFirmware)
+        this.editedFirmware.id = this.uneditableFirmware.id
+        this.editedFirmware.version = this.uneditableFirmware.version
+        this.editedFirmware.firmwareLink = this.uneditableFirmware.firmwareLink
+        this.editedFirmware.created_at = this.uneditableFirmware.created_at
     },
     handleOkAdd(bvModalEvt: any) {
       // Prevent modal from closing
@@ -106,11 +109,11 @@ export default Vue.extend({
 
       // Push the name to submitted names
       // this.submittedNames.push(this.name)
-      this.$emit('submit', this.editedFirmware)
-      
+      await this.$emit('submit', this.editedFirmware)
+
       // Hide the modal manually
       this.$nextTick(() => {
-        (this as any).$bvModal.hide('modal-prevent-closing')
+        (this as any).$bvModal.hide('add-modal')
       })
     }
   }
