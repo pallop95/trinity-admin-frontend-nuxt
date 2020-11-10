@@ -22,25 +22,11 @@
               </template>
 
               <template v-slot:cell(edit)="row">
-                <b-button
-                  size="sm"
-                  @click="handleClickEdit(row.item, $event.target)"
-                  class="mr-1"
-                  variant="info"
-                >
-                  Edit
-                </b-button>
+                <EditButton @clickedEdit="handleClickEdit(row.item)" />
               </template>
 
               <template v-slot:cell(delete)="row">
-                <b-button
-                  size="sm"
-                  @click="handleClickDelete(row.item, $event.target)"
-                  class="mr-1"
-                  variant="danger"
-                >
-                  Delete
-                </b-button>
+                <DeleteButton @clickedDelete="handleClickDelete(row.item)" />
               </template>
             </b-table>
           </div>
@@ -200,13 +186,13 @@ export default Vue.extend({
       this.$root.$emit("bv::show::modal", this.addModalId)
     },
 
-    handleClickDelete (role: Role, button: any) {
+    handleClickDelete (role: Role) {
       this.deleteModal.content =
         "RoleID: " + role.id + "\n" +
         "Business Unit : " + role.role + "\n"
         // "Address     : " + role.sensorModel + "\n" +
       this.deleteModal.role = role
-      this.$root.$emit("bv::show::modal", this.deleteModal.id, button)
+      this.$root.$emit("bv::show::modal", this.deleteModal.id)
     },
     async confirmDelete(): Promise<void> {
       console.log('confirmDelete');

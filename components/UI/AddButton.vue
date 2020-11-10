@@ -1,8 +1,14 @@
 <template>
   <div>
-      <b-button title="Save file" @click="handleClickAdd">
-        <!-- v-b-modal.add-modal -->
-        <b-icon icon="cloud-upload" aria-hidden="true" />
+      <b-button
+        title="Add row"
+        variant="success"
+        @click="handleClickAdd"
+      >
+        <b-icon
+          icon="plus-circle"
+          aria-hidden="true"
+        />
       </b-button>
   </div>
 </template>

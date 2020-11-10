@@ -17,25 +17,11 @@
               </template>
 
               <template v-slot:cell(edit)="row">
-                <b-button
-                  size="sm"
-                  @click="handleClickEdit(row.item, $event.target)"
-                  class="mr-1"
-                  variant="info"
-                >
-                  Edit
-                </b-button>
+                <EditButton @clickedEdit="handleClickEdit(row.item)" />
               </template>
 
               <template v-slot:cell(delete)="row">
-                <b-button
-                  size="sm"
-                  @click="handleClickDelete(row.item, $event.target)"
-                  class="mr-1"
-                  variant="danger"
-                >
-                  Delete
-                </b-button>
+                <DeleteButton @clickedDelete="handleClickDelete(row.item)" />
               </template>
             </b-table>
           </div>
@@ -198,19 +184,19 @@ export default Vue.extend({
 
       this.$root.$emit("bv::show::modal", this.addModalId)
     },
-    async handleClickEdit (firmware: Firmware, button: any): Promise<void> {
+    async handleClickEdit (firmware: Firmware): Promise<void> {
       this.firmware = firmware
       await (this as any).$store.dispatch('firmwares/setFirmwareAction', this.firmware)
 
       this.$root.$emit("bv::show::modal", this.addModalId)
     },
 
-    handleClickDelete (firmware: any, button: any) {
+    handleClickDelete (firmware: any) {
       this.deleteModal.content =
         "FirmwareID: " + firmware.id + "\n" +
-        "Version  : " + firmware.version;
-      this.deleteModal.firmware = firmware;
-      this.$root.$emit("bv::show::modal", this.deleteModal.id, button)
+        "Version  : " + firmware.version
+      this.deleteModal.firmware = firmware
+      this.$root.$emit("bv::show::modal", this.deleteModal.id)
     },
     async confirmDelete(): Promise<void> {
       console.log('confirmDelete');
