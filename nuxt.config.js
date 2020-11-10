@@ -62,4 +62,8 @@ export default {
     baseUrl: process.env.BASE_URL || 'https://nuxt-blog-8f570.firebaseio.com',
     fbAPIKey: 'AIzaSyAI2UzDR-csGgzilh7x8sTsuf6CHX-oKKg'
   }
+
+  // ,configureWebpack: {
+  //   devtool: 'source-map'
+  // }
 }

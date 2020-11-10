@@ -23,18 +23,18 @@
             User Management
             <ul class="sub-nav-list">
               <li>
-                <nuxt-link to="/user-management/create-user">
-                  Create User
+                <nuxt-link to="/user-management/user-list">
+                  User List
+                </nuxt-link>
+              </li>
+              <li>
+                <nuxt-link to="/user-management/business-units">
+                  Business Units
                 </nuxt-link>
               </li>
               <li>
                 <nuxt-link to="/user-management/roles">
                   Roles
-                </nuxt-link>
-              </li>
-              <li>
-                <nuxt-link to="/user-management/permission">
-                  Permission
                 </nuxt-link>
               </li>
             </ul>

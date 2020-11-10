@@ -1,17 +1,17 @@
 <template>
 <!-- id/business_unit/created_at/updated_at/edit/delete -->
   <div>
-    <b-container class="role-row">
+    <b-container class="businessUnit-row">
       <b-row>
         <b-col md="2" offset-md="10">
           <AddButton @clickedAdd="handleClickAdd" />
         </b-col>
       </b-row>
  
-      <b-row align-v="center" class="role-table">
+      <b-row align-v="center" class="businessUnit-table">
         <b-col md="12">
           <div class="content">
-            <b-table :items="roles" :fields="fields">
+            <b-table :items="businessUnits" :fields="fields">
 
               <template #cell(created_at)="data">
                 <b class="text-success"> {{ formatDate(data.value) }} </b>
@@ -48,11 +48,11 @@
       </b-row>
     </b-container>
 
-    <RoleModal @submit="onSubmitted" />
+    <BusinessUnitModal @submit="onSubmitted" />
 
     <b-modal
       :id="deleteModal.id"
-      title="Delete Role?"
+      title="Delete BusinessUnit?"
       centered
       hide-header-close
       @ok="confirmDelete"
@@ -65,7 +65,7 @@
 
 <script lang="ts">
 import Vue from "vue"
-import { Role } from '@/interfaces/role.interface'
+import { BusinessUnit } from '@/interfaces/businessUnit.interface'
 
 export default Vue.extend({
   data() {
@@ -75,17 +75,17 @@ export default Vue.extend({
       deleteModal: {
         id: 'delete-modal',
         content: '',
-        role: {} as Role,
+        businessUnit: {} as BusinessUnit,
       },
       fields: [
         {
           key: "id",
-          label: "RoleID",
+          label: "BusinessUnitID",
           sortable: true,
         },
         {
-          key: "role",
-          label: "Role",
+          key: "business_unit",
+          label: "Business Unit",
           sortable: true,
         },
         {
@@ -107,29 +107,29 @@ export default Vue.extend({
           label: "Delete"
         }
       ],
-      role: {} as Role,
-      blankRole: {
+      businessUnit: {} as BusinessUnit,
+      blankBusinessUnit: {
         id: '',
-        role: '',
+        business_unit: '',
         created_at: new Date(),
         updated_at: new Date()
-      } as Role,
+      } as BusinessUnit,
 
-      roles: [] as any[]
+      businessUnits: [] as any[]
     }
   },
   async mounted(): Promise<void> {
-    await this.getRoles()
+    await this.getBusinessUnits()
   },
   methods: {
-    async onSubmitted(editedRole: Role): Promise<void> {
-      console.log(editedRole)
-      this.role = editedRole
+    async onSubmitted(editedBusinessUnit: BusinessUnit): Promise<void> {
+      console.log(editedBusinessUnit)
+      this.businessUnit = editedBusinessUnit
       
-      if(this.role.id === '') {
-        await this.postRole()
+      if(this.businessUnit.id === '') {
+        await this.postBusinessUnit()
       } else {
-        await this.updateRole(this.role)
+        await this.updateBusinessUnit(this.businessUnit)
       }
     },
     // showModal() {
@@ -138,86 +138,86 @@ export default Vue.extend({
     // closeModal() {
     //   this.isModalVisible = false;
     // },
-    async postRole (): Promise<void> {
-      let createRole = {
-          ...this.role,
+    async postBusinessUnit (): Promise<void> {
+      let createBusinessUnit = {
+          ...this.businessUnit,
           created_at: new Date(),
           updated_at: new Date()
       }
 
       const res = await (this as any).$axios.post(
-        "/roles.json", createRole
+        "/businessUnits.json", createBusinessUnit
       )
-      console.log('postRole', res)
+      console.log('postBusinessUnit', res)
       if (res.status === 200) {
-        createRole = {
-          ...createRole,
+        createBusinessUnit = {
+          ...createBusinessUnit,
           id: res.data.name
         }
-        console.log(createRole)
-        this.roles.push(createRole)
+        console.log(createBusinessUnit)
+        this.businessUnits.push(createBusinessUnit)
       }
     },
-    async updateRole (role: Role): Promise<void> {
-      let roles = this.roles
+    async updateBusinessUnit (businessUnit: BusinessUnit): Promise<void> {
+      let businessUnits = this.businessUnits
 
-      role.updated_at = new Date()
+      businessUnit.updated_at = new Date()
 
       const res = await (this as any).$axios({
         method: "put",
-        url: "/roles/" + role.id +".json",
-        data: role
+        url: "/businessUnits/" + businessUnit.id +".json",
+        data: businessUnit
       })
 
       if (res.status == 200) {
-        let index = roles.findIndex((item: Role) => item.id === role.id)
+        let index = businessUnits.findIndex((item: BusinessUnit) => item.id === businessUnit.id)
 
-        roles.splice(index, 1, role)
+        businessUnits.splice(index, 1, businessUnit)
       }
 
-      this.roles = roles
+      this.businessUnits = businessUnits
     },
 
-    async getRoles (): Promise<void> {
-      const res = await (this as any).$axios.get("/roles.json")
+    async getBusinessUnits (): Promise<void> {
+      const res = await (this as any).$axios.get("/businessUnits.json")
 
       for (const key in res.data) {
-          this.roles.push({ ...res.data[key], id: key });
+          this.businessUnits.push({ ...res.data[key], id: key });
       }
     },
     async handleClickAdd (): Promise<void> {
       console.log('handleClickAdd')
-      this.role = this.blankRole
+      this.businessUnit = this.blankBusinessUnit
 
-      await (this as any).$store.dispatch('roles/setRoleAction', this.role)
-
-      this.$root.$emit("bv::show::modal", this.addModalId)
-    },
-    async handleClickEdit (role: Role, button: any): Promise<void> {
-      this.role = role
-      await (this as any).$store.dispatch('roles/setRoleAction', this.role)
+      await (this as any).$store.dispatch('businessUnits/setBusinessUnitAction', this.businessUnit)
 
       this.$root.$emit("bv::show::modal", this.addModalId)
     },
+    async handleClickEdit (businessUnit: BusinessUnit, button: any): Promise<void> {
+      this.businessUnit = businessUnit
+      await (this as any).$store.dispatch('businessUnits/setBusinessUnitAction', this.businessUnit)
 
-    handleClickDelete (role: Role, button: any) {
+      this.$root.$emit("bv::show::modal", this.addModalId)
+    },
+
+    handleClickDelete (businessUnit: BusinessUnit, button: any) {
       this.deleteModal.content =
-        "RoleID: " + role.id + "\n" +
-        "Business Unit : " + role.role + "\n"
-        // "Address     : " + role.sensorModel + "\n" +
-      this.deleteModal.role = role
+        "BusinessUnitID: " + businessUnit.id + "\n" +
+        "Business Unit : " + businessUnit.business_unit + "\n"
+        // "Address     : " + businessUnit.sensorModel + "\n" +
+      this.deleteModal.businessUnit = businessUnit
       this.$root.$emit("bv::show::modal", this.deleteModal.id, button)
     },
     async confirmDelete(): Promise<void> {
       console.log('confirmDelete');
-      let role: Role = this.deleteModal.role;
+      let businessUnit: BusinessUnit = this.deleteModal.businessUnit;
 
       const res = await (this as any).$axios({
         method: "delete",
-        url: "/roles/" + role.id +".json"
+        url: "/businessUnits/" + businessUnit.id +".json"
       })
 
-      this.roles = this.roles.filter((item: Role) => item.id != role.id)
+      this.businessUnits = this.businessUnits.filter((item: BusinessUnit) => item.id != businessUnit.id)
     },
 
     formatDate(dateInput: string) {
@@ -229,11 +229,11 @@ export default Vue.extend({
 </script>
 
 <style>
-.role-row {
+.businessUnit-row {
   margin-top: 30px;
 }
 
-.role-table {
+.businessUnit-table {
   margin-top: 30px;
 }
 </style>

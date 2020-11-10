@@ -3,16 +3,7 @@
     <b-container class="firmware-row">
       <b-row>
         <b-col md="2" offset-md="10">
-          <b-button 
-            title="Save file"
-            @click="handleClickAdd"
-          >
-          <!-- v-b-modal.add-modal -->
-            <b-icon
-              icon="cloud-upload"
-              aria-hidden="true"
-            />
-          </b-button>
+          <AddButton @clickedAdd="handleClickAdd" />
         </b-col>
       </b-row>
 
@@ -84,10 +75,6 @@ export default Vue.extend({
     return {
       // isModalVisible: false,
       addModalId: 'add-modal',
-      editModal: {
-        id: 'edit-modal',
-        firmware: {} as Firmware,
-      },
       deleteModal: {
         id: 'delete-modal',
         content: '',
@@ -142,7 +129,7 @@ export default Vue.extend({
     async onSubmitted(editedFirmware: Firmware): Promise<void> {
       console.log(editedFirmware)
       this.firmware = editedFirmware
-      
+
       if(this.firmware.id === '') {
         await this.postFirmware()
       } else {
@@ -197,8 +184,6 @@ export default Vue.extend({
     async getFirmwares (): Promise<void> {
       const res = await (this as any).$axios.get("/firmwares.json")
 
-      const postsArray = []
-
       for (const key in res.data) {
           this.firmwares.push({ ...res.data[key], id: key });
       }
@@ -229,14 +214,14 @@ export default Vue.extend({
     },
     async confirmDelete(): Promise<void> {
       console.log('confirmDelete');
-      let employee: Firmware = this.deleteModal.firmware;
+      let firmware: Firmware = this.deleteModal.firmware;
 
       const res = await (this as any).$axios({
         method: "delete",
-        url: "/firmwares/" + employee.id +".json"
+        url: "/firmwares/" + firmware.id +".json"
       })
 
-      this.firmwares = this.firmwares.filter((firmmware: Firmware) => firmmware.id != employee.id)
+      this.firmwares = this.firmwares.filter((item: Firmware) => item.id != firmware.id)
     },
 
     formatDate(dateInput: string) {
