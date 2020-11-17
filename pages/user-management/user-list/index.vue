@@ -6,11 +6,18 @@
           <AddButton @clickedAdd="handleClickAdd" />
         </b-col>
       </b-row>
+    <!-- <AddButton @clickedAdd="handleClickAdd" /> -->
+    <!-- <b-container class="user-row">
+      <b-row>
+        <b-col md="2" offset-md="10">
+          <AddButton @clickedAdd="handleClickAdd" />
+        </b-col>
+      </b-row> -->
 
       <b-row align-v="center" class="user-table">
         <b-col md="12">
           <div class="content">
-            <b-table :items="users" :fields="fields">
+            <b-table responsive :items="users" :fields="fields">
 
               <template #cell(business_unit_id)="data">
                 <b> {{ getBusinessUnit(data.value) }} </b>
@@ -264,10 +271,13 @@ export default Vue.extend({
 
 <style>
 .user-row {
+  margin-bottom: 20px;
+}
+/* .user-row {
   margin-top: 30px;
 }
 
 .user-table {
   margin-top: 30px;
-}
+} */
 </style>

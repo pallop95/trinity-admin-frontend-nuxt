@@ -11,7 +11,7 @@
       <b-row align-v="center" class="sensorType-table">
         <b-col md="12">
           <div class="content">
-            <b-table :items="sensorTypes" :fields="fields">
+            <b-table responsive :items="sensorTypes" :fields="fields">
 
               <template #cell(created_at)="data">
                 <b class="text-success"> {{ formatDate(data.value) }} </b>

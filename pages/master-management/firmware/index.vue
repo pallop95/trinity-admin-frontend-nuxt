@@ -10,7 +10,7 @@
       <b-row align-v="center" class="firmware-table">
         <b-col md="12">
           <div class="content">
-            <b-table :items="firmwares" :fields="fields">
+            <b-table responsive :items="firmwares" :fields="fields">
 
               <template #cell(created_at)="data">
                 <b class="text-success"> {{ formatDate(data.value) }} </b>

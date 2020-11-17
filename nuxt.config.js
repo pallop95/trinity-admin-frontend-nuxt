@@ -26,7 +26,8 @@ export default {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
-    '@/plugins/nuxt-custom-bootstrap'
+    '@/plugins/nuxt-custom-bootstrap',
+    '@/plugins/vue-sidebar-menu'
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -55,6 +56,10 @@ export default {
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
+    extend (config) {
+      config.resolve.alias['vue$'] = 'vue/dist/vue.esm.js'
+      config.resolve.alias['extensions'] = "['*', '.js', '.vue', '.json']"
+    }
   },
   // ,
 

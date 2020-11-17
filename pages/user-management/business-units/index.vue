@@ -11,7 +11,7 @@
       <b-row align-v="center" class="businessUnit-table">
         <b-col md="12">
           <div class="content">
-            <b-table :items="businessUnits" :fields="fields">
+            <b-table responsive :items="businessUnits" :fields="fields">
 
               <template #cell(created_at)="data">
                 <b class="text-success"> {{ formatDate(data.value) }} </b>

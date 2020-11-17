@@ -10,7 +10,7 @@
       <b-row align-v="center" class="sensorModel-table">
         <b-col md="12">
           <div class="content">
-            <b-table :items="sensorModels" :fields="fields">
+            <b-table responsive :items="sensorModels" :fields="fields">
 
               <template #cell(sensorTypeId)="data">
                 <b class="text-success"> {{ getTypenameBySensorTypeId(data.value) }} ({{ data.value }}) </b>
