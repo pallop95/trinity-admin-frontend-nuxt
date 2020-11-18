@@ -27,7 +27,11 @@ export default {
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
     '@/plugins/nuxt-custom-bootstrap',
-    '@/plugins/vue-sidebar-menu'
+    '@/plugins/vue-sidebar-menu',
+    {
+      src: '~/plugins/vue-js-xlsx',
+      ssr: false
+    }
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
