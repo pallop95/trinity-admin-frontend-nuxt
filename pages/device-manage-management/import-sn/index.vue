@@ -4,7 +4,7 @@
       <h2>
         Device Management > Import S/N
       </h2>
-      <UploadFiles input-label="Import S/N" />
+      <UploadFilesGetJson input-label="Import S/N" />
     </div>
   </div>
 </template>

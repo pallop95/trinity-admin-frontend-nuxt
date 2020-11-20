@@ -2,7 +2,9 @@ export interface SensorModel {
     id: string,
     address: string,
     model: string,
-    value: string,
-    sensorTypeId: string,
-    created_at: Date
+    value: Object,
+    // sensorTypeId: string,
+    created_at: Date,
+    updated_at: Date
 }
+

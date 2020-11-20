@@ -21,19 +21,27 @@ export const mutations = {
 export const actions = {
   authenticateUser (vuexContext: any, authData: ICredentials) {
     return (this as any).$axios.$post(
-      '/auth/login',
+      // '/auth/login',
+      '/user/login',
       {
         username: authData.username,
         password: authData.password
         // returnSecureToken: true
       }
-    ).then((result: IServerLoginResponse) => {
-      vuexContext.commit('setToken', result.access_token)
+    ).then((res: any) => {
+      const result: IServerLoginResponse = res.data;
+      vuexContext.commit('setToken', result.auth_token)
       vuexContext.commit('setUsername', result.username)
       localStorage.setItem('username', result.username)
-      localStorage.setItem('token', result.access_token)
+      localStorage.setItem('token', result.auth_token)
       // localStorage.setItem('tokenExpiration', new Date().getTime() + +result.expiresIn * 1000);
     }).catch((e: any) => console.log(e))
+
+    /*{
+      "access_token": "string",
+      "id": 0,
+      "username": "string"
+    }*/
   },
   initAuth (vuexContext: any) {
     const token = localStorage.getItem('token')

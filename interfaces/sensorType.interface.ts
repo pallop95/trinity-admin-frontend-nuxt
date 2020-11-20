@@ -3,9 +3,10 @@ import { SensorModel } from "./sensorModel.interface";
 export interface SensorType {
     id: string,
     address: string,
-    typeName: string,
-    sensorModel: SensorModel,
-    created_at: Date
+    type: string,
+    sensor_models: SensorModel[],
+    created_at: Date,
+    updated_at: Date
 }
 
 // export interface SensorTypeDropdownList {

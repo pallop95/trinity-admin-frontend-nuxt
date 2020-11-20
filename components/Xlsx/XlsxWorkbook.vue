@@ -1,5 +1,5 @@
 <script>
-import WorkbookHandler from "../mixins/WorkbookHandler";
+import WorkbookHandler from "../../mixins/WorkbookHandler";
 
 export default {
   mixins: [WorkbookHandler],
@@ -14,7 +14,7 @@ export default {
   },
   methods: {
     async load() {
-      const { globalPolyfill } = require("../polyfills");
+      const { globalPolyfill } = require("../../polyfills");
       globalPolyfill();
       const {
         utils: { book_new, book_append_sheet }

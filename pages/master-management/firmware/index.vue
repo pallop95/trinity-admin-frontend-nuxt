@@ -49,14 +49,6 @@ import Vue from "vue"
 import { Firmware } from '@/interfaces/firmware.interface'
 
 export default Vue.extend({
-  /*asyncData() {
-    return {
-      firmware: {
-        version: '11111',
-        firmwareLink: 'firmwareLink1111',
-      }
-    }
-  },*/
   data() {
     return {
       // isModalVisible: false,
@@ -114,7 +106,13 @@ export default Vue.extend({
   methods: {
     async onSubmitted(editedFirmware: Firmware): Promise<void> {
       console.log(editedFirmware)
+      
+      // this.firmware.id = editedFirmware.id
+      // this.firmware.version = editedFirmware.version
+      // this.firmware.firmwareLink = editedFirmware.firmwareLink
+      // this.firmware.created_at = editedFirmware.created_at
       this.firmware = editedFirmware
+
 
       if(this.firmware.id === '') {
         await this.postFirmware()

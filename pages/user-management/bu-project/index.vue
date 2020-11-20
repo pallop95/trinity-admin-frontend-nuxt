@@ -110,12 +110,17 @@ export default Vue.extend({
   methods: {
     async onSubmitted(editedRole: Role): Promise<void> {
       console.log(editedRole)
-      this.role = editedRole
+      // this.role = editedRole
+
+      this.role.id = editedRole.id
+      this.role.role = editedRole.role
+      this.role.created_at = editedRole.created_at
+      this.role.updated_at = editedRole.updated_at
       
       if(this.role.id === '') {
         await this.postRole()
       } else {
-        await this.updateRole(this.role)
+        await this.updateRole()
       }
     },
     // showModal() {
@@ -125,8 +130,9 @@ export default Vue.extend({
     //   this.isModalVisible = false;
     // },
     async postRole (): Promise<void> {
+      let role = this.role
       let createRole = {
-          ...this.role,
+          ...role,
           created_at: new Date(),
           updated_at: new Date()
       }
@@ -144,7 +150,8 @@ export default Vue.extend({
         this.roles.push(createRole)
       }
     },
-    async updateRole (role: Role): Promise<void> {
+    async updateRole (): Promise<void> {
+      let role = this.role
       let roles = this.roles
 
       role.updated_at = new Date()

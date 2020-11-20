@@ -1,46 +1,60 @@
 <template>
-  <div class="header-container">
+  <!-- <div class="header-container">
     <header class="the-header">
-      <!-- <TheSideNavToggle @toggle="$emit('sidenav-toggle')" /> -->
+      <TheSideNavToggle @toggle="$emit('sidenav-toggle')" />
       <div class="logo">
         <nuxt-link to="/">
           Trinity Admin
         </nuxt-link>
       </div>
       <div class="spacer" />
-      <!-- <div class="navigation-items">
-        <ul class="nav-list">
-          <li class="nav-item">
-            <nuxt-link to="/posts">
-              Blog
-            </nuxt-link>
-          </li>
-          <li class="nav-item">
-            <nuxt-link to="/about">
-              About
-            </nuxt-link>
-          </li>
-          <li class="nav-item">
-            <nuxt-link to="/admin">
-              Admin
-            </nuxt-link>
-          </li>
-        </ul>
-      </div> -->
     </header>
+  </div> -->
+  <!-- <b-navbar type="dark" variant="dark">
+    <b-navbar-nav>
+      <nuxt-link to="/"> Trinity Admin </nuxt-link>
+    </b-navbar-nav>
+  </b-navbar> -->
+  <div>
+    <b-navbar type="dark"  variant="dark">
+      <b-navbar-brand>Trinity Admin</b-navbar-brand>
+
+      <b-collapse id="nav-collapse" is-nav>
+
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item-dropdown right>
+            <template #button-content>
+              <em>{{ username }}</em>
+            </template>
+            <b-dropdown-item @click="onLogout">Log Out</b-dropdown-item>
+          </b-nav-item-dropdown>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
   </div>
 </template>
 
 <script>
-import Vue from 'vue'
-import TheSideNavToggle from '@/components/Navigation/TheSideNavToggle'
+import Vue from "vue";
+import TheSideNavToggle from "@/components/Navigation/TheSideNavToggle";
 
 export default Vue.extend({
-  name: 'TheHeader',
+  name: "TheHeader",
   components: {
-    TheSideNavToggle
+    TheSideNavToggle,
+  },
+  computed: {
+    username() {
+      return this.$store.getters['auths/username'];
+    }
+  },
+  methods: {
+    onLogout() {
+      this.$store.dispatch('auths/logout');
+      this.$router.push('/login');
+    }
   }
-})
+});
 </script>
 
 <style scoped>

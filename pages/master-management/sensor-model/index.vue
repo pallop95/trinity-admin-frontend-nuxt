@@ -11,10 +11,6 @@
         <b-col md="12">
           <div class="content">
             <b-table responsive :items="sensorModels" :fields="fields">
-
-              <template #cell(sensorTypeId)="data">
-                <b class="text-success"> {{ getTypenameBySensorTypeId(data.value) }} ({{ data.value }}) </b>
-              </template>
               
               <template #cell(created_at)="data">
                 <b class="text-success"> {{ formatDate(data.value) }} </b>
@@ -60,7 +56,7 @@
 import Vue from "vue"
 import { SensorModel } from '@/interfaces/sensorModel.interface'
 import { Dropdown } from '@/interfaces/dropdown.interface'
-import { SensorType } from "~/interfaces/sensorType.interface"
+// import { SensorType } from "~/interfaces/sensorType.interface"
 
 export default Vue.extend({
   data() {
@@ -88,16 +84,11 @@ export default Vue.extend({
           label: "Model",
           sortable: true,
         },
-        {
-          key: "value",
-          label: "Value",
-          sortable: true,
-        },
-        {
-          key: "sensorTypeId",
-          label: "TypeName (SensorTypeID)",
-          sortable: true,
-        },
+        // {
+        //   key: "value",
+        //   label: "Value",
+        //   sortable: true,
+        // },
         {
           key: "created_at",
           label: "Created At",
@@ -105,11 +96,11 @@ export default Vue.extend({
         },
         {
           key: "edit",
-          label: "Edit"
+          label: ""
         },
         {
           key: "delete",
-          label: "Delete"
+          label: ""
         }
       ],
       sensorModel: {} as SensorModel,
@@ -117,28 +108,27 @@ export default Vue.extend({
         id: '',
         address: '',
         model: '',
-        value: '',
-        sensorTypeId: '',
+        value: {},
         created_at: new Date(),
       } as SensorModel,
       sensorModels: [] as any[],
-      sensorTypeDropdownList: [] as Dropdown[],
-      sensorTypeList: [] as SensorType[]
+      // sensorTypeDropdownList: [] as Dropdown[],
+      // sensorTypeList: [] as SensorType[]
     }
   },
   async mounted(): Promise<void> {
     this.sensorModels = await this.getSensorModels()
     
-    this.sensorTypeList = await this.getSensorTypeList()
+    // this.sensorTypeList = await this.getSensorTypeList()
   },
   methods: {
-    async getSensorTypeList(): Promise<SensorType[]> {
-      await (this as any).$store.dispatch('sensorTypes/setSensorTypeListAction')
+    // async getSensorTypeList(): Promise<SensorType[]> {
+    //   await (this as any).$store.dispatch('sensorTypes/setSensorTypeListAction')
 
-      return await this.$store.getters['sensorTypes/getSensorTypeList']
-    },
+    //   return await this.$store.getters['sensorTypes/getSensorTypeList']
+    // },
     async onSubmitted (editedSensorModel: SensorModel): Promise<void> {
-
+      // console.log('editedSensorModel', editedSensorModel)
       if(editedSensorModel.id == '') {
         await this.postSensorModel(editedSensorModel)
       } else {
@@ -148,17 +138,29 @@ export default Vue.extend({
     async postSensorModel (editedSensorModel: SensorModel): Promise<void> {
       let createSensorModel = {
           ...editedSensorModel,
-          created_at: new Date()
+          created_at: new Date(),
+          updated_at: new Date()
       }
-
-      const res = await (this as any).$axios.post(
-        "/sensorModels.json", createSensorModel
-      )
-      console.log('postSensorModel', res)
+    
+      const res = await (this as any).$axios({
+        method: "post",
+        url: "/device/sensorModels",
+        headers: {
+          'Authorization': this.$store.getters['auths/bearerToken']
+        },
+        data: createSensorModel
+        /*data: {
+          firstName: "Fred",
+          lastName: "Flintstone",
+        },*/
+      });
+      // console.log('postSensorModel', res)
       if (res.status === 200) {
         createSensorModel = {
           ...createSensorModel,
-          id: res.data.name
+          id: res.data.data.id,
+          created_at: res.data.data.created_at,
+          updated_at: res.data.data.updated_at,
         }
         this.sensorModels.push(createSensorModel)
       }
@@ -166,32 +168,35 @@ export default Vue.extend({
     async updateSensorModel (editedSensorModel: SensorModel): Promise<void> {
       let sensorModels = this.sensorModels
 
-      editedSensorModel.created_at = new Date()
+      editedSensorModel.updated_at = new Date()
 
       const res = await (this as any).$axios({
         method: "put",
-        url: "/sensorModels/" + editedSensorModel.id +".json",
+        url: "/device/sensorModels",
+        headers: {
+          'Authorization': this.$store.getters['auths/bearerToken']
+        },
         data: editedSensorModel
       })
-
+      // console.log('res put', res)
       if (res.status == 200) {
         let index = sensorModels.findIndex((item: SensorModel) => item.id === editedSensorModel.id)
         sensorModels.splice(index, 1, editedSensorModel)
-      }
 
-      this.sensorModels = sensorModels
+        this.sensorModels = sensorModels
+      }
     },
     async getSensorModels (): Promise<SensorModel[]> {
-      const res = await (this as any).$axios.get("/sensorModels.json")
-
+      const res = await (this as any).$axios.get("/device/sensorModels")
       let sensorModels: SensorModel[] = []
-      for (const key in res.data) {
-        sensorModels.push({ ...res.data[key], id: key });
+      for (const index in res.data.data) {
+        sensorModels.push({ ...res.data.data[index] });
       }
+      // console.log('sensorModels', sensorModels)
       return sensorModels
     },
     async handleClickAdd (): Promise<void> {
-      console.log('handleClickAdd')
+      // console.log('handleClickAdd')
       this.sensorModel = this.blankSensorModel
       
       await (this as any).$store.dispatch('sensorModels/setSensorModelAction', this.sensorModel)
@@ -199,7 +204,7 @@ export default Vue.extend({
       this.$root.$emit("bv::show::modal", this.addModalId)
     },
     async handleClickEdit (sensorModel: SensorModel, button: any): Promise<void> {
-      console.log('handleClickEdit')
+      // console.log('handleClickEdit')
       this.sensorModel = sensorModel
       await (this as any).$store.dispatch('sensorModels/setSensorModelAction', this.sensorModel)
 
@@ -209,31 +214,29 @@ export default Vue.extend({
     handleClickDelete (sensorModel: any) {
       this.deleteModal.content =
         "SensorModelID: " + sensorModel.id + "\n" +
-        "Version  : " + sensorModel.version;
+        "Model  : " + sensorModel.model;
       this.deleteModal.sensorModel = sensorModel
       this.$root.$emit("bv::show::modal", this.deleteModal.id)
     },
     async confirmDelete(): Promise<void> {
-      console.log('confirmDelete');
+      // console.log('confirmDelete');
       let sensorModel: SensorModel = this.deleteModal.sensorModel;
 
       const res = await (this as any).$axios({
         method: "delete",
-        url: "/sensorModels/" + sensorModel.id +".json"
+        url: "/device/sensorModels",
+        headers: {
+          'Authorization': this.$store.getters['auths/bearerToken']
+        },
+        data: sensorModel
       })
-
+      // console.log('res deleted', res)
       this.sensorModels = this.sensorModels.filter((item: SensorModel) => item.id != sensorModel.id)
     },
 
     formatDate (dateInput: string) {
       let date = new Date(dateInput)
       return date.toISOString().substring(0, 10)
-    },
-    getTypenameBySensorTypeId (sensorTypeId: string): String {
-      let sensorType: SensorType = this.sensorTypeList.filter((item: SensorType) => item.id == sensorTypeId)[0]
-      if( sensorType )
-        return sensorType.typeName
-      return ''
     }
   }
 })

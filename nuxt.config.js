@@ -55,21 +55,27 @@ export default {
   axios: {
     proxy: false,
     proxyHeaders: false,
-    baseURL: 'https://nuxt-blog-8f570.firebaseio.com'
+    // baseURL: 'https://nuxt-blog-8f570.firebaseio.com'
+    baseURL: 'https://trinity.dev.dolabs.tech/auth'
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
-    extend (config) {
+    // extend (config) {
+    extend(config, ctx) {
       config.resolve.alias['vue$'] = 'vue/dist/vue.esm.js'
       config.resolve.alias['extensions'] = "['*', '.js', '.vue', '.json']"
+      if (ctx.isDev) {
+        config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
+      }
     }
   },
   // ,
 
   env: {
-    baseUrl: process.env.BASE_URL || 'https://nuxt-blog-8f570.firebaseio.com',
-    fbAPIKey: 'AIzaSyAI2UzDR-csGgzilh7x8sTsuf6CHX-oKKg'
+    // baseUrl: process.env.BASE_URL || 'https://nuxt-blog-8f570.firebaseio.com',
+    baseUrl: process.env.BASE_URL || 'https://trinity.dev.dolabs.tech/auth',
+    // fbAPIKey: 'AIzaSyAI2UzDR-csGgzilh7x8sTsuf6CHX-oKKg'
   }
 
   // ,configureWebpack: {

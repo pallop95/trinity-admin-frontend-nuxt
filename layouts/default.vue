@@ -1,9 +1,6 @@
 <template>
-  <div
-    id="demo"
-    :class="[{'collapsed' : collapsed}, {'onmobile' : isOnMobile}]"
-  >
-        <TheNewHeader @sidenav-toggle="true" />
+  <div id="demo" :class="[{ collapsed: collapsed }, { onmobile: isOnMobile }]">
+    <TheNewHeader @sidenav-toggle="true" />
     <div class="demo">
       <div>
         <!-- <h1>
@@ -51,11 +48,12 @@
 
 <script>
 const separator = {
-  template: `<hr style="border-color: rgba(0, 0, 0, 0.1); margin: 20px;">`
-}
+  template: `<hr style="border-color: rgba(0, 0, 0, 0.1); margin: 20px;">`,
+};
 
 export default {
-  name: 'App',
+  middleware: ['check-auth','auth'],
+  name: "App",
   data() {
     return {
       menu: [
@@ -90,8 +88,8 @@ export default {
           icon: "fa fa-cube",
         },
         {
-          href: "/user-management/roles",
-          title: "Roles",
+          href: "/user-management/bu-project",
+          title: "Business Units Project",
           icon: "fa fa-user-shield",
         },
         {
@@ -105,14 +103,14 @@ export default {
           icon: "fa fa-microchip",
         },
         {
-          href: "/master-management/sensor-model",
-          title: "Sensor Model",
-          icon: "fa fa-satellite-dish",
-        },
-        {
           href: "/master-management/sensor-type",
           title: "Sensor Type",
           icon: "fa fa-wifi",
+        },
+        {
+          href: "/master-management/sensor-model",
+          title: "Sensor Model",
+          icon: "fa fa-satellite-dish",
         },
         {
           header: true,
@@ -143,36 +141,35 @@ export default {
       isOnMobile: false,
     };
   },
-  mounted () {
-    this.onResize()
-    window.addEventListener('resize', this.onResize)
+  mounted() {
+    this.onResize();
+    window.addEventListener("resize", this.onResize);
   },
   methods: {
-    onToggleCollapse (collapsed) {
-      console.log(collapsed)
-      this.collapsed = collapsed
+    onToggleCollapse(collapsed) {
+      console.log(collapsed);
+      this.collapsed = collapsed;
     },
-    onItemClick (event, item, node) {
-      console.log('onItemClick')
+    onItemClick(event, item, node) {
+      console.log("onItemClick");
       // console.log(event)
       // console.log(item)
       // console.log(node)
     },
-    onResize () {
+    onResize() {
       if (window.innerWidth <= 767) {
-        this.isOnMobile = true
-        this.collapsed = true
+        this.isOnMobile = true;
+        this.collapsed = true;
       } else {
-        this.isOnMobile = false
-        this.collapsed = false
+        this.isOnMobile = false;
+        this.collapsed = false;
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style>
-
 body,
 html {
   margin: 0;
@@ -180,7 +177,7 @@ html {
 }
 
 body {
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: "Source Sans Pro", sans-serif;
   font-size: 18px;
   background-color: #f2f4f7;
   color: #262626;

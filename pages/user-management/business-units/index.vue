@@ -94,6 +94,7 @@ export default Vue.extend({
         }
       ],
       businessUnit: {} as BusinessUnit,
+      businessUnitForDispatch: {} as BusinessUnit,
       blankBusinessUnit: {
         id: '',
         business_unit: '',
@@ -109,24 +110,27 @@ export default Vue.extend({
   },
   methods: {
     async onSubmitted(editedBusinessUnit: BusinessUnit): Promise<void> {
-      console.log(editedBusinessUnit)
-      this.businessUnit = editedBusinessUnit
+      // console.log(editedBusinessUnit)
+      // this.businessUnit = editedBusinessUnit
+
+      this.businessUnit.id = editedBusinessUnit.id
+      this.businessUnit.business_unit = editedBusinessUnit.business_unit
+      this.businessUnit.created_at = editedBusinessUnit.created_at
+      this.businessUnit.updated_at = editedBusinessUnit.updated_at
       
-      if(this.businessUnit.id === '') {
+      if(editedBusinessUnit.id === '') {
         await this.postBusinessUnit()
       } else {
-        await this.updateBusinessUnit(this.businessUnit)
+        await this.updateBusinessUnit()
       }
     },
-    // showModal() {
-    //   this.isModalVisible = true;
-    // },
-    // closeModal() {
-    //   this.isModalVisible = false;
-    // },
-    async postBusinessUnit (): Promise<void> {
+
+    async postBusinessUnit (
+      // businessUnit: BusinessUnit
+    ): Promise<void> {
+      let businessUnit = this.businessUnit
       let createBusinessUnit = {
-          ...this.businessUnit,
+          ...businessUnit,
           created_at: new Date(),
           updated_at: new Date()
       }
@@ -144,7 +148,10 @@ export default Vue.extend({
         this.businessUnits.push(createBusinessUnit)
       }
     },
-    async updateBusinessUnit (businessUnit: BusinessUnit): Promise<void> {
+    async updateBusinessUnit (
+      // businessUnit: BusinessUnit
+    ): Promise<void> {
+      let businessUnit = this.businessUnit
       let businessUnits = this.businessUnits
 
       businessUnit.updated_at = new Date()

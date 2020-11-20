@@ -4,8 +4,9 @@ export interface ICredentials {
 }
 
 export interface IServerLoginResponse {
-    access_token: string;
-    // id: number;
+    // access_token: string;
+    auth_token: string;
+    id: number;
     username: string;
     // role: string;
 }
